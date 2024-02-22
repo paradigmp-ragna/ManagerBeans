@@ -1,4 +1,11 @@
 # ManagerBeans
 Office ai
 
-# Employee DB
+# Home
+3000
+
+# Postgres
+5432
+
+# Postgres Admin
+8080
