@@ -51,6 +51,26 @@ docker run -d --name nginx-container -p 81:80 --network my-network nginx-balance
 docker build -t webapp-home .
 docker run -d --name webapp-home -p 3000:3000 --network my-network webapp-home
 
+# Swarm visualizer
+docker swarm init
+docker run -it -d -p 8081:8080 --name vis -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
+
+$$ docker swarm join --token SWMTKN-1-5pefww4sftexv76139ucuvmt3l4nx7c2n9hl25wqqzl5vy9ebs-ddgmadny55ij4l258f56zh23f 192.168.65.3:2377
+$$ current node (onld95abuc43tdomv6yy9mvpr) is now a manager.
+
+docker network create -d overlay replication
+docker network inspect replication
+docker service create --name nginx-container -p 81:80 --network replication --replicas 2 nginx-balancer
+docker service create --name webapp-home -p 3000:3000 --network replication --replicas 2 webapp-home
+
+$$ docker service update --replicas 7 sleep-app
+
+docker service rm nginx-container
+docker service rm webapp-home
+
+docker kill vis
+docker swarm leave --force
+
 
 
 
