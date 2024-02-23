@@ -1,32 +1,42 @@
 # ManagerBeans
 Office ai
+5001 /ai
 
 # Home
-3000
+3000 /
 
 # Postgres
-5432
+5432 /pg
 
 # Postgres Admin
-8080
+8050 - (5432)
 
 # Dashboard
-3001
+3001 /dash
 
 # docker
 workflow
 
-# helm
-workflow
-
-# jenkins
-pipeline
-
-# kubernets
-pipeline
-
 # nginx
-80
+80 ()
+
+# authorization
+5000 /auth
+
+# Node JS
+5003 /node
+
+# Task
+5002 /task
+
+# React Flow
+3002 /flow
+
+# docker visualizer
+8080 ()
+
+# Chat Bot
+3003 /chat
 
 # temp
 File storage or artifact storage
