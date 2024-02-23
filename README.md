@@ -40,3 +40,8 @@ workflow
 
 # temp
 File storage or artifact storage
+
+
+
+# Nginx
+docker run -d --name webapp-nginx -p 8080:80 -v /path/to/nginx.conf:/etc/nginx/nginx.conf nginxdo
