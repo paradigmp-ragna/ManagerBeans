@@ -44,4 +44,49 @@ File storage or artifact storage
 
 
 # Nginx
-docker run -d --name webapp-nginx -p 8080:80 -v /path/to/nginx.conf:/etc/nginx/nginx.conf nginxdo
+docker build -t nginx-balancer .
+docker run -d --name nginx-container -p 81:80 --network my-network nginx-balancer
+
+# Home
+docker build -t webapp-home .
+docker run -d --name webapp-home -p 3000:3000 --network my-network webapp-home
+
+
+
+
+
+
+
+
+
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://webapp-home;
+        }
+
+        location /login {
+            proxy_pass http://webapp-home;
+        }
+
+        location /register {
+            proxy_pass http://webapp-home;
+        }
+
+        location /auth {
+            proxy_pass http://webapp-auth;
+        }
+
+        location /pg {
+            proxy_pass http://webapp-postgres;
+        }
+    }
+}
+
