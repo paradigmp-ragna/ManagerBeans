@@ -6,7 +6,7 @@ Office ai
 3000 /
 
 # Postgres
-5432 /pg
+5432
 
 # Postgres Admin
 8050 - (5432)
@@ -20,7 +20,7 @@ workflow
 # nginx
 80 ()
 
-# authorization
+# authorization (not used)
 5000 /auth
 
 # Node JS
@@ -51,6 +51,19 @@ docker run -d --name nginx-container -p 81:80 --network my-network nginx-balance
 docker build -t webapp-home .
 docker run -d --name webapp-home -p 3000:3000 --network my-network webapp-home
 
+# Postgres
+docker run -d --name webapp-postgres --network my-network --network-alias webapp-postgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_USER=myuser -e POSTGRES_DB=mydatabase postgres
+
+docker run --name sqltutorial --network my-network -e POSTGRES_PASSWORD=marviniscool -e POSTGRES_USER=myuser -e POSTGRES_DB=maintenance_db -p 5432:5432 -d postgres
+
+docker build -t webapp-postgres .
+
+docker run --name webapp-postgres --network my-network -e POSTGRES_PASSWORD=pass123 -e POSTGRES_USER=myuser -e POSTGRES_DB=maintenance_db -p 5432:5432 -d webapp-postgres
+
+
+# Postgres Admin (application working)
+docker run -d --name webapp-pgadmin --network my-network -p 5050:5050  thajeztah/pgadmin4
+
 # Swarm visualizer
 docker swarm init
 docker run -it -d -p 8081:8080 --name vis -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
@@ -70,6 +83,9 @@ docker service rm webapp-home
 
 docker kill vis
 docker swarm leave --force
+
+
+
 
 
 
