@@ -20,7 +20,7 @@ workflow
 # nginx
 80 ()
 
-# authorization (not used)
+# authorization
 5000 /auth
 
 # Node JS
@@ -49,16 +49,21 @@ docker run -d --name nginx-container -p 81:80 --network my-network nginx-balance
 
 # Home
 docker build -t webapp-home .
-docker run -d --name webapp-home -p 3000:3000 --network my-network webapp-home
+docker run -it --name webapp-home -p 3000:3000 --network my-network webapp-home
 
 # Postgres
-docker run -d --name webapp-postgres --network my-network --network-alias webapp-postgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_USER=myuser -e POSTGRES_DB=mydatabase postgres
+docker run --name webapp-postgres --network  my-network -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres
 
-docker run --name sqltutorial --network my-network -e POSTGRES_PASSWORD=marviniscool -e POSTGRES_USER=myuser -e POSTGRES_DB=maintenance_db -p 5432:5432 -d postgres
+# postgres cli
+docker exec -it webapp-postgres psql -U postgres
 
-docker build -t webapp-postgres .
+# Auth
+docker build -t webapp-auth .
+docker run -it --name webapp-auth -p 5000:5000 --network my-network webapp-auth
 
-docker run --name webapp-postgres --network my-network -e POSTGRES_PASSWORD=pass123 -e POSTGRES_USER=myuser -e POSTGRES_DB=maintenance_db -p 5432:5432 -d webapp-postgres
+#####
+docker run --name webapp-postgres-container -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+docker run -it --rm --link webapp-postgres-container:postgres postgres psql -h postgres -U postgres
 
 
 # Postgres Admin (application working)
@@ -116,7 +121,11 @@ http {
             proxy_pass http://webapp-home;
         }
 
-        location /auth {
+        location /auth/login {
+            proxy_pass http://webapp-auth;
+        }
+
+        location /auth/register {
             proxy_pass http://webapp-auth;
         }
 

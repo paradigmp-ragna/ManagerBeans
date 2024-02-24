@@ -11,7 +11,7 @@ ARG NODE_VERSION=21.4.0
 FROM node:${NODE_VERSION}-alpine
 
 # Set working directory for all build stages.
-WORKDIR /usr/src/app
+WORKDIR ManagerBeans/
 
 
 ################################################################################
@@ -39,9 +39,7 @@ WORKDIR /usr/src/app
 #    npm ci
 
 # Copy the rest of the source files into the image.
-COPY public/ /usr/src/app/public
-COPY src/ /usr/src/app/src
-COPY package.json /usr/src/app/
+COPY . .
 
 # Run the build script.
 #RUN npm run build
