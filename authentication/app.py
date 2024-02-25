@@ -26,7 +26,7 @@ def connection_status():
         return jsonify({'status': 'Failed to connect to PostgreSQL'})
 
 # Route for login/authentication
-@app.route('/auth/login')
+@app.route('/auth/login', methods=['POST'])
 def login():
     # Authentication logic goes here
     return 'Login page'

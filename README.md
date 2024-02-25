@@ -45,7 +45,7 @@ File storage or artifact storage
 
 # Nginx
 docker build -t nginx-balancer .
-docker run -d --name nginx-container -p 81:80 --network my-network nginx-balancer
+docker run -it --name nginx-container -p 81:80 --network my-network nginx-balancer
 
 # Home
 docker build -t webapp-home .
