@@ -87,8 +87,10 @@ $$ current node (onld95abuc43tdomv6yy9mvpr) is now a manager.
 
 docker network create -d overlay replication
 docker network inspect replication
-docker service create --name nginx-container -p 81:80 --network replication --replicas 2 nginx-balancer
-docker service create --name webapp-home -p 3000:3000 --network replication --replicas 2 webapp-home
+docker service create --name nginx-container -p 81:80 --network replication --replicas 1 nginx-balancer
+docker service create --name webapp-home -p 3000:3000 --network replication --replicas 1 webapp-home
+docker service create --name webapp-postgres --network replication -e POSTGRES_HOST_AUTH_METHOD=trust --replicas 1 --mount type=volume,source=postgresdatabase,target=/var/lib/postgresql/data postgres
+docker service create -d --network replication -p 5000:5000 --name webapp-auth --replicas 1 webapp-auth
 
 $$ docker service update --replicas 7 sleep-app
 
