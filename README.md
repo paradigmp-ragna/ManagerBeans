@@ -96,6 +96,8 @@ $$ docker service update --replicas 7 sleep-app
 
 docker service rm nginx-container
 docker service rm webapp-home
+docker service rm webapp-postgres
+docker service rm webapp-auth
 
 docker kill vis
 docker swarm leave --force
