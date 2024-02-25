@@ -51,8 +51,21 @@ docker run -d --name nginx-container -p 81:80 --network my-network nginx-balance
 docker build -t webapp-home .
 docker run -it --name webapp-home -p 3000:3000 --network my-network webapp-home
 
+# Dashboard
+docker build -t webapp-dash .
+docker run -it --name webapp-dash -p 3001:3000 --network my-network webapp-dash
+
 # Postgres
-docker run --name webapp-postgres --network  my-network -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres
+docker run --name webapp-postgres --network  my-network -e POSTGRES_HOST_AUTH_METHOD=trust -v postgresdatabase:/var/lib/postgresql/data -d postgres
+
+##
+\l
+\c ujwal
+SELECT table_name
+FROM information_schema.tables
+WHERE table_type = 'BASE TABLE'
+AND table_schema NOT IN ('pg_catalog', 'information_schema');
+
 
 # postgres cli
 docker exec -it webapp-postgres psql -U postgres
@@ -60,10 +73,6 @@ docker exec -it webapp-postgres psql -U postgres
 # Auth
 docker build -t webapp-auth .
 docker run -it --name webapp-auth -p 5000:5000 --network my-network webapp-auth
-
-#####
-docker run --name webapp-postgres-container -e POSTGRES_PASSWORD=mysecretpassword -d postgres
-docker run -it --rm --link webapp-postgres-container:postgres postgres psql -h postgres -U postgres
 
 
 # Postgres Admin (application working)
@@ -135,3 +144,54 @@ http {
     }
 }
 
+
+
+
+
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://webapp-home:3000;
+        }
+
+        location /auth/login {
+            proxy_pass http://webapp-auth:5000/auth/login;
+        }
+
+        location /auth/connection-status {
+            proxy_pass http://webapp-auth:5000/auth/connection-status;
+        }
+    }
+}
+
+
+
+
+
+
+
+http {
+    server {
+        listen 80;
+        server_name localhost;
+
+        location /auth {
+            proxy_pass http://webapp-auth:5000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location / {
+            proxy_pass http://webapp-home:3000;
+        }
+    }
+}

@@ -1,10 +1,4 @@
-# Use the official PostgreSQL image from Docker Hub
-FROM postgres:latest
+FROM ubuntu:latest
 
-# Set the default PostgreSQL username and password
-ENV POSTGRES_USER=myuser
-ENV POSTGRES_PASSWORD=mypassword
-ENV POSTGRES_DB=mydatabase
-
-# Expose the PostgreSQL port
-EXPOSE 5432
+# Command to create the files inside the volume at runtime
+CMD ["sh", "-c", "mkdir -p /dummy_volume && touch /dummy_volume/dummy_file.txt && echo 'Dummy file created.' > /dummy_volume/creation_message.txt && sleep infinity"]

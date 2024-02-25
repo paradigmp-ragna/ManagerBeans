@@ -5,7 +5,7 @@ const ConnectionStatus = () => {
 
   useEffect(() => {
     // Fetch connection status from Flask backend
-    fetch('/api/connection-status')
+    fetch('/auth/connection-status')
       .then(response => response.json())
       .then(data => setStatus(data.status))
       .catch(error => console.error('Error fetching connection status:', error));
